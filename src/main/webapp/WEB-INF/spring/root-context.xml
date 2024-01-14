@@ -10,7 +10,7 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://127.0.0.1:3306/officehi?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
+			value="jdbc:mysql://hi-db:3306/officehi?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true" />
 		<property name="username" value="root" />
 		<property name="password" value="11111111" />
 	</bean>
