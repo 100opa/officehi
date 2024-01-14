@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: hi-container
+    build: 
+      context: .
+      dockerfile: Dockerfile-app
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - 9999:8080
+    depends_on:
+      - database
+      
+  database:
+    container_name: hi-db
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+#    image: mysql:8.0
+    hostname: docker-mysql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_DATABASE: ver4
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 11111111
