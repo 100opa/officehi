@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 
+ * @author 엄다빈
+ * @editDate 23.12.18 ~ 23.12.26
+  -->
+<mapper namespace="com.groupware.officehi.repository.ApprovalRepository">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="approvalNo">
+		INSERT INTO approval(user_no, date, title, content, category)
+		VALUES (#{userNo}, curdate(), #{title}, #{content}, #{category})
+	</insert>
+	
+	<insert id="insertChecker">
+		INSERT INTO checker
+		VALUES (#{approvalNo}, #{checkerNo}, #{confirm}, #{userNo})
+	</insert>
+	
+	<select id="findByUserNo">
+		SELECT name
+		FROM user
+		WHERE user_no = #{userNo}
+	</select>
+
+	<select id="findAll">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findApprovalByUserNoOrChecker">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE a.user_no = #{userNo}
+		OR
+		approval_no IN
+		(SELECT approval_no
+		FROM checker
+		WHERE checker_no = 1 AND user_no = #{userNo}) OR
+       		approval_no IN
+	        (SELECT approval_no
+			FROM checker
+			WHERE approval_no IN
+				(SELECT approval_no
+				FROM checker
+				WHERE checker_no = 2 AND user_no = #{userNo}) AND checker_no = 1 AND confirm = 1)
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+
+	<select id="findUserNameAndDeptName">
+		SELECT *
+		FROM user
+		WHERE position NOT IN
+		<foreach collection="array" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="findUserNameAndDeptNameByApprovalNo">		
+		SELECT *
+		FROM user u JOIN approval a
+		WHERE a.approval_no = #{approvalNo} AND
+		u.user_no NOT IN (SELECT user_no FROM CHECKER WHERE approval_no = #{approvalNo}) AND
+		position NOT IN
+		<foreach collection="position" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="findAllByApprovalNo">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE approval_no = #{approvalNo}
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByUserNo">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE a.user_no = #{userNo}
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByChecker">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE approval_no IN
+		(SELECT approval_no
+		FROM checker
+		WHERE checker_no = 1 AND user_no = #{userNo}) OR
+        	approval_no IN
+	        (SELECT approval_no
+			FROM checker
+			WHERE approval_no IN
+				(SELECT approval_no
+				FROM checker
+				WHERE checker_no = 2 AND user_no = #{userNo}) AND checker_no = 1 AND confirm = 1)
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByUserName">
+		SELECT *
+		FROM approval a, user u
+		WHERE a.user_no = u.user_no AND u.name like concat('%', #{userName}, '%')
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByTitle">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE title like concat('%', #{title}, '%')
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByDeptName">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE dept_name like concat('%', #{deptName}, '%') 
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllBydate">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE date = #{date}
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findAllByCheckDate">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE check_date = #{checkDate}
+		<if test="paging != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+	<select id="findChekcerByApprovalNo">
+		SELECT *
+		FROM checker
+		WHERE approval_no = #{approvalNo}
+	</select>
+	
+	<select id="findByApprovalNo">
+		SELECT *
+		FROM approval a LEFT JOIN user u
+		ON a.user_no = u.user_no
+		WHERE approval_no = #{approvalNo}
+	</select>
+	
+	<update id="updateApproval">
+		UPDATE approval
+		SET title = #{title}, content = #{content}
+		WHERE approval_no = #{approvalNo}
+	</update>
+	
+	<update id="updateChecker">
+		UPDATE checker
+		SET user_no = #{userNo}, confirm = #{confirm}
+		WHERE approval_no = #{approvalNo} AND checker_no = #{checkerNo}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM approval
+		WHERE approval_no = #{approvalNo}
+	</delete>
+	
+	<delete id="deleteChecker">
+		DELETE FROM checker
+		WHERE approval_no = #{approvalNo} AND checker_no = #{checkerNo}
+	</delete>
+	
+	<update id="updateStatus">
+		UPDATE approval
+		SET check_date = curdate(), status = #{status}
+		WHERE approval_no = #{approvalNo}
+	</update>
+</mapper>

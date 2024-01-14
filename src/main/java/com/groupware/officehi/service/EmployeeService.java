@@ -15,7 +15,6 @@ import com.groupware.officehi.dto.FileDTO;
 import com.groupware.officehi.repository.EmployeeRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 박재용
@@ -23,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
  *           비즈니스로직 추가 23.12.26 ~ 23.12.29
  */
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
@@ -50,7 +48,6 @@ public class EmployeeService {
 			filePath = filePath.replace("/", File.separator).replace("\\", File.separator);
 
 			File file = new File(filePath, convertFileName);
-			log.info("file : {}", file);
 
 			try {
 				// file 물리저장
@@ -63,7 +60,6 @@ public class EmployeeService {
 				employeeRepository.insertFileInfo(fileDTO);
 
 			} catch (Exception e) {
-				log.error("File upload failed: {}", e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -99,7 +95,6 @@ public class EmployeeService {
 			filePath = filePath.replace("/", File.separator).replace("\\", File.separator);
 
 			File file = new File(filePath, convertFileName);
-			log.info("file : {}", file);
 
 			try {
 				multipartFile.transferTo(file);

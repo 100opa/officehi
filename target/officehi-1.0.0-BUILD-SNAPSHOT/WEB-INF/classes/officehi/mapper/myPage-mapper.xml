@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  
+* @author 정유진
+ * @editDate 23.12.20 ~ 23.12.21 
+ -->
+<mapper namespace="com.groupware.officehi.repository.MyPageRepository">
+
+	<select id="findByUserNo" resultType="MyPageDTO">
+		select * 
+		from user
+		where user_no = #{userNo}
+	</select>
+	
+</mapper>

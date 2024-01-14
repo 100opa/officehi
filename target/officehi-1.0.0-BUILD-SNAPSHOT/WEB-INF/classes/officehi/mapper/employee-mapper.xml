@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+* @author 박재용 * @editDate 23.12.20 ~ 23.12.22 
+* 페이지네이션 기능 추가 23.12.23 ~ 23.12.25 
+* 파일 업로드 및 수정 기능 추가 23.12.26 ~ 23.12.29 
+-->
+<mapper namespace="com.groupware.officehi.repository.EmployeeRepository">
+
+	<insert id="insert" keyProperty="userNo" useGeneratedKeys="true"
+		parameterType="EmployeeDTO">
+		INSERT INTO user (name, phone, birth_date, to_date, dept_name, position)
+		VALUES (#{name}, #{phone}, #{birthDate}, #{toDate}, #{deptName}, #{position})
+	</insert>
+
+	<insert id="insertFileInfo" parameterType="FileDTO">
+		INSERT INTO file
+		(file_name, original_file_name, file_type_no, user_no, file_path)
+		VALUES (#{fileName}, #{originalFileName}, #{fileTypeNo}, #{userNo}, #{filePath})
+	</insert>
+
+	<select id="getFilePathByFileTypeNo" parameterType="String"
+		resultType="String">
+		SELECT FILE_PATH
+		FROM FILE_TYPE
+		WHERE FILE_TYPE_NO = #{fileTypeNo}
+	</select>
+
+	<select id="findUserInfoByUserNo" resultType="EmployeeDTO">
+		SELECT * FROM user
+		WHERE user_no = #{userNo}
+	</select>
+
+	<select id="findProfileFileByUserNo" resultType="FileDTO">
+		SELECT * FROM file
+		WHERE user_no = #{userNo} and file_type_no ='1';
+	</select>
+
+	<select id="findStampFileByUserNo" resultType="FileDTO">
+		SELECT * FROM file
+		WHERE user_no = #{userNo} and file_type_no ='2';
+	</select>
+
+	<update id="update" parameterType="EmployeeDTO">
+		UPDATE user
+		SET
+		name = #{name},
+		phone = #{phone},
+		birth_date = #{birthDate},
+		to_date = #{toDate},
+		dept_name = #{deptName},
+		position = #{position}
+		WHERE user_no = #{userNo}
+	</update>
+
+	<update id="updateFileInfo" parameterType="FileDTO">
+		UPDATE file
+		SET
+		file_name = #{fileName},
+		original_file_name = #{originalFileName},
+		file_path = #{filePath}
+		WHERE file_type_no = #{fileTypeNo} and user_no = #{userNo}
+	</update>
+
+	<update id="updateFromDate" parameterType="EmployeeDTO">
+		UPDATE user
+		SET
+		from_date = curdate()
+		WHERE user_no = #{userNo}
+	</update>
+
+	<!-- 전체조회 -->
+	<select id="findAll" resultType="EmployeeDTO">
+		SELECT user_no, name, phone, birth_date,
+		position, to_date, from_date, dept_name
+		FROM user
+		ORDER BY user_no desc
+		<if test="paging != null and paging.amount != null and paging.offset != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+
+	<select id="findAllByName" resultType="EmployeeDTO">
+		SELECT user_no, name, phone, birth_date, position, to_date, from_date, dept_name
+		FROM user
+		WHERE name LIKE concat('%', #{name}, '%')
+		<if test="paging != null and paging.amount != null and paging.offset != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+
+	<select id="findAllByUserNo" resultType="EmployeeDTO">
+		SELECT user_no, name, phone, birth_date, position, to_date, from_date, dept_name
+		FROM user
+		WHERE user_no LIKE concat('%', #{userNo}, '%')
+		<if test="paging != null and paging.amount != null and paging.offset != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+
+	<select id="findAllByDeptName" resultType="EmployeeDTO">
+		SELECT user_no, name, phone, birth_date, position, to_date, from_date, dept_name
+		FROM user
+		WHERE dept_name LIKE concat('%', #{deptName}, '%')
+		<if test="paging != null and paging.amount != null and paging.offset != null">
+			LIMIT #{paging.amount} OFFSET #{paging.offset}
+		</if>
+	</select>
+	
+</mapper>

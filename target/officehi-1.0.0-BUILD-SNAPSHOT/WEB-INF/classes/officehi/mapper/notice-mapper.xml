@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+ * @author 정유진
+ * @editDate 23.12.18 ~ 23.12.19
+ 
+ * @author 이승준	+검색 기능 23.12.24 ~ 23.12.26	+수정/삭제 기능 추가 23.12.26 ~ 23.12.27
+ * +페이지네이션 23.12.28 ~ 23.12.28
+-->
+<mapper namespace="com.groupware.officehi.repository.NoticeRepository">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="noticeNo" parameterType="NoticeDTO">
+		INSERT INTO NOTICE(title, date, content)
+		VALUES (#{title}, curdate(), #{content})
+	</insert>
+	
+	<select id="findAll" resultType="NoticeDTO">
+		select notice_no, date, content, title
+		from notice
+		order by notice_no desc
+	</select>
+	
+	<select id="findByNoticeNo" parameterType="Long" resultType="NoticeDTO">
+		select *
+		from notice
+		where notice_no = #{noticeNo}
+		order by notice_no desc
+	</select>
+
+	<!-- 검색 -->
+	<select id="findAllByTitle" resultType="NoticeDTO" parameterType="String">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE title LIKE concat('%', #{title}, '%')
+	</select>
+	
+	<select id="findAllByContent" resultType="NoticeDTO" parameterType="String">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE content LIKE concat('%', #{content}, '%')
+	</select>
+	
+	<select id="findAllByNoticeNo" resultType="NoticeDTO" parameterType="Long">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE notice_no LIKE concat('%', #{noticeNo}, '%')
+	</select>
+	
+	<!-- 수정/삭제 -->
+	<update id="update" parameterType="NoticeDTO">
+		UPDATE notice
+		SET
+		title = #{title},
+		content = #{content}
+		WHERE notice_no = #{noticeNo}
+	</update>
+	
+	<delete id="delete" parameterType="Long">
+		DELETE 
+		FROM notice 
+		WHERE notice_no = #{noticeNo}
+	</delete>
+	
+	<!-- 페이지네이션 -->
+	<select id="findAllPaging">
+		select notice_no, date, content, title
+		from notice
+		order by notice_no desc
+		limit #{amount} offset #{offset}
+	</select>
+	
+	<select id="findAllByTitlePaging">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE title LIKE concat('%', #{title}, '%')
+		order by notice_no desc
+		LIMIT #{paging.amount} OFFSET #{paging.offset}
+	</select>
+	
+	<select id="findAllByContentPaging">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE content LIKE concat('%', #{content}, '%')
+		order by notice_no desc
+		LIMIT #{paging.amount} OFFSET #{paging.offset}
+	</select>
+	
+	<select id="findAllByNoticeNoPaging">
+		SELECT notice_no, title, date, content
+		FROM notice
+		WHERE notice_no LIKE concat('%', #{noticeNo}, '%')
+		order by notice_no desc
+		LIMIT #{paging.amount} OFFSET #{paging.offset}
+	</select>
+	
+</mapper>

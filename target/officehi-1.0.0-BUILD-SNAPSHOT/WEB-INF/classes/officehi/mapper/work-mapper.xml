@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.groupware.officehi.repository.WorkRepository">
+	
+	<insert id="insert" keyProperty="userNo">
+		INSERT INTO WORK(user_no, date, arrival_time) 
+		values(#{userNo}, curdate(), curtime())
+	</insert>
+	
+	<update id="update" keyProperty="userNo">
+		UPDATE WORK SET leave_time = curtime()
+		WHERE user_no = #{userNo} AND date = curdate()
+	</update>
+	
+	<select id="checkDateDuplicate">
+		SELECT * FROM WORK 
+		WHERE 
+		user_no = #{userNo} AND date = curdate() AND arrival_time IS NOT NULL
+	</select>
+	
+	<select id="findWorkTimeByUserNo" resultType="WorkDTO" parameterType="java.lang.Long">
+        SELECT w.date, u.name, w.user_no, w.arrival_time, w.leave_time
+        FROM work w
+        JOIN user u ON w.user_no = u.user_no
+        WHERE w.user_no = #{userNo}
+    </select>
+
+</mapper>	
