@@ -23,6 +23,6 @@ services:
     ports:
       - 3307:3306
     environment:
-      MYSQL_DATABASE: ver4
+      MYSQL_DATABASE: officehi
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: 11111111
