@@ -3,7 +3,9 @@
 
 <br>
 최종 보고서, 기획서등을 포함한 최종 산출물 링크
-[구글 드라이브](https://drive.google.com/drive/folders/1fItYaOcz05qKoLrdA7tQZNDzokkkGbXS?usp=sharing)
+<br>
+[구글 드라이브]
+(https://drive.google.com/drive/folders/1fItYaOcz05qKoLrdA7tQZNDzokkkGbXS?usp=sharing)
 
 ## 🏢 프로젝트 명
 그룹웨어"OfficeHi"
